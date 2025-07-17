@@ -57,20 +57,7 @@ Mock Backend Pods
 - **AnalysisTemplate**: Success rate monitoring for rollouts
 
 ## Deployment Steps
-
-### 1. Update Docker Images
-
-Update the image references in the manifests:
-
-```bash
-# Update demo app image
-sed -i 's|your-registry/demo-app:latest|your-actual-registry/demo-app:latest|g' deployment/argo-rollout.yaml
-
-# Update mock backend image
-sed -i 's|your-registry/demo-app-mock-backend:latest|your-actual-registry/demo-app-mock-backend:latest|g' deployment/mock-backend-deployment.yaml
-```
-
-### 2. Update Domain Names
+### 1. Update Domain Names
 
 Update the domain names in Istio resources:
 
@@ -80,7 +67,7 @@ sed -i 's|demo-app.example.com|your-domain.com|g' deployment/istio-gateway.yaml
 sed -i 's|demo-app.example.com|your-domain.com|g' deployment/istio-virtualservice.yaml
 ```
 
-### 3. Deploy the Application
+### 2. Deploy the Application
 
 ```bash
 # Apply all resources
