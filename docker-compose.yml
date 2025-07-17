@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  demo-app:
+    build: .
+    ports:
+      - "9876:9876"
+    environment:
+      - BACKEND_URL=http://mock-backend:9875/api/data
+      - PORT=9876
+    depends_on:
+      - mock-backend
+    networks:
+      - demo-network
+
+  mock-backend:
+    build: ./mock-backend
+    ports:
+      - "9875:9875"
+    networks:
+      - demo-network
+
+networks:
+  demo-network:
+    driver: bridge 

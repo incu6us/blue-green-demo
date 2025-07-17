@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: demo-app-vs
+  namespace: demo-app
+spec:
+  hosts:
+  - "demo-app.example.com"  # Replace with your actual domain
+  - "demo-app.local"
+  gateways:
+  - demo-app-gateway
+  http:
+  - route:
+    - destination:
+        host: demo-app-active
+        port:
+          number: 9876
+      weight: 100
+    retries:
+      attempts: 3
+      perTryTimeout: 2s
+    timeout: 10s
+    corsPolicy:
+      allowOrigins:
+      - exact: "*"
+      allowMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+      allowHeaders:
+      - "*" 

@@ -1,0 +1,74 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: demo-app-rollout
+  namespace: demo-app
+spec:
+  replicas: 3
+  strategy:
+    blueGreen:
+      # Active service name (the service that serves production traffic)
+      activeService: demo-app-active
+      # Preview service name (the service that serves the new version during testing)
+      previewService: demo-app-preview
+      # Auto promotion enables automatic promotion of the preview to active
+      autoPromotionEnabled: false
+      # Scale down delay for the old version after promotion
+      scaleDownDelaySeconds: 30
+      # Pre-promotion analysis
+      prePromotionAnalysis:
+        templates:
+        - templateName: success-rate
+        args:
+        - name: service-name
+          value: demo-app-preview.demo-app.svc.cluster.local
+      # Post-promotion analysis
+      postPromotionAnalysis:
+        templates:
+        - templateName: success-rate
+        args:
+        - name: service-name
+          value: demo-app-active.demo-app.svc.cluster.local
+  selector:
+    matchLabels:
+      app: demo-app
+  template:
+    metadata:
+      labels:
+        app: demo-app
+    spec:
+      containers:
+      - name: demo-app
+        image: incu6us/demo-app:latest
+        ports:
+        - containerPort: 9876
+        env:
+        - name: BACKEND_URL
+          valueFrom:
+            configMapKeyRef:
+              name: demo-app-config
+              key: BACKEND_URL
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: demo-app-config
+              key: PORT
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 9876
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 9876
+          initialDelaySeconds: 10
+          periodSeconds: 10

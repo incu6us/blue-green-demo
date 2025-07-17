@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: demo-app-gateway
+  namespace: demo-app
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "demo-app.example.com"  # Replace with your actual domain
+    - "demo-app.local"
+    - "*"  # For local development/testing
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: demo-app-tls  # Optional: for TLS termination
+    hosts:
+    - "demo-app.example.com"  # Replace with your actual domain 

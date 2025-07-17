@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mock-backend
+  namespace: demo-app
+  labels:
+    app: mock-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mock-backend
+  template:
+    metadata:
+      labels:
+        app: mock-backend
+    spec:
+      containers:
+      - name: mock-backend
+        image: incu6us/demo-app-mock-backend:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 9875
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 9875
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 9875
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mock-backend-service
+  namespace: demo-app
+  labels:
+    app: mock-backend
+spec:
+  selector:
+    app: mock-backend
+  ports:
+  - name: http
+    port: 9875
+    targetPort: 9875
+  type: ClusterIP 
