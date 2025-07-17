@@ -125,7 +125,7 @@ kubectl argo rollouts rollback demo-app-rollout -n demo-app
 ### External Access
 ```bash
 # Get the Istio Ingress Gateway IP
-kubectl get svc -n istio-system istio-ingressgateway
+kubectl get services -n istio-system
 
 # Access via domain (if configured)
 curl http://your-domain.com
