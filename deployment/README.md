@@ -10,8 +10,8 @@ This directory contains Kubernetes manifests for deploying the demo application 
    - Prometheus (for metrics collection)
 
 2. **Docker Images** pushed to a public registry:
-   - `your-registry/demo-app:latest`
-   - `your-registry/demo-app-mock-backend:latest`
+   - `incu6us/demo-app:latest`
+   - `incu6us/demo-app-mock-backend:latest`
 
 ## Architecture
 
